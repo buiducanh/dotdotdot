@@ -1,0 +1,42 @@
+"3.9 (created: 2015/02/15 15:49:05)
+
+source! /home/anh/.vimperatorrc.local
+
+" vim: set ft=vimperator:
+nnoremap j 8j
+nnoremap k 8k
+nnoremap h 8h
+nnoremap l 8l
+
+set editor="gnome-terminal --disable-factory -x vim"
+
+command! sourcerc :source ~/.vimperatorrc
+
+:let mapleader = "."
+nnoremap <leader>j :back<CR>
+nnoremap <leader>k :forward<CR>
+
+:set titlestring=Firefox
+
+"" App Tabs
+command! app set apptab!
+command! noapp set noapptab!
+
+" shortcuts to pages
+command! manga tabopen bato.to, kissmanga.com, mangak.net
+command! dotanews tabopen gosugamers.net/dota2, joindota.com
+command! social tabopen facebook.com, twitter.com
+command! yt tabopen youtube.com
+
+" Press 'm' to go to previous tab
+noremap m :tabprevious<CR>
+" Press ',' to go to next tab
+noremap , :tabnext<CR>
+" Press 'q' to delete current tab
+noremap q :bdelete<CR>
+noremap M :tabmove -1<CR>
+noremap < :tabmove +1<CR>
+noremap \' :quit<CR>
+noremap \" :undo<CR>
+cnoremap <leader>\\ <Esc>
+noremap = +

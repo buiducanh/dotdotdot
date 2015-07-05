@@ -1,0 +1,7 @@
+alias setclip='xclip -selection c'
+alias getclip='xclip -selection clipboard -o'
+alias g='git'
+alias ..='cd ../'
+alias ...='cd ../../'
+alias ....='cd ../../../'
+alias ggsync='(cd ~/Google\ Drive && grive)' 
