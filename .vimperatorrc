@@ -9,6 +9,7 @@ nnoremap h 8h
 nnoremap l 8l
 
 set editor="gnome-terminal --disable-factory -x vim"
+set hintchars=hjkluiop
 
 command! sourcerc :source ~/.vimperatorrc
 
