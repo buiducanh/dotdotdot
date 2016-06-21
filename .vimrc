@@ -25,6 +25,17 @@ Plugin 'gmarik/Vundle.vim'
 "Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Avoid a name conflict with L9
 "Plugin 'user/L9', {'name': 'newL9'}
+"Plugin 'leafgarland/typescript-vim'
+Plugin 'Shougo/vimproc.vim'
+"Plugin 'Quramy/tsuquyomi'
+Plugin 'scrooloose/nerdtree'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'vim-scripts/genutils'
+Plugin 'vim-scripts/PushPop.vim'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-obsession'
+Plugin 'Shougo/unite.vim'
+Plugin 'Shougo/unite-outline'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -54,9 +65,6 @@ filetype plugin indent on    " required
 
 " :W will write with sudo permissions
 command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
-
-" line number
-set number
 
 " syntax highlight
 syntax on
@@ -96,3 +104,20 @@ autocmd FileType c set omnifunc=ccomplete#Complete
 " tabs
 " " (despite the mappings later):
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
+
+set number
+set ignorecase
+
+set statusline=%t       "tail of the filename
+set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
+set statusline+=%{&ff}] "file format
+set statusline+=%h      "help file flag
+set statusline+=%m      "modified flag
+set statusline+=%r      "read only flag
+set statusline+=%y      "filetype
+set statusline+=%=      "left/right separator
+set statusline+=%c,     "cursor column
+set statusline+=%l/%L   "cursor line/total lines
+set statusline+=\ %P    "percent through file
+set statusline+=%{ObsessionStatus()}
+:Obsess
