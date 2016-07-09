@@ -121,7 +121,6 @@ set statusline+=%l/%L   "cursor line/total lines
 set statusline+=\ %P    "percent through file
 set statusline+=%{ObsessionStatus()}
 set laststatus=2
-Obsess
 
 " Removes trailing spaces
 function TrimWhiteSpace()
