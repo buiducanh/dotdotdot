@@ -26,16 +26,18 @@ Plugin 'gmarik/Vundle.vim'
 " Avoid a name conflict with L9
 "Plugin 'user/L9', {'name': 'newL9'}
 "Plugin 'leafgarland/typescript-vim'
-Plugin 'Shougo/vimproc.vim'
 "Plugin 'Quramy/tsuquyomi'
-Plugin 'scrooloose/nerdtree'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'vim-scripts/genutils'
-Plugin 'vim-scripts/PushPop.vim'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-obsession'
+Plugin 'mxw/vim-jsx'
+Plugin 'pangloss/vim-javascript'
 Plugin 'Shougo/unite.vim'
 Plugin 'Shougo/unite-outline'
+Plugin 'Shougo/vimproc.vim'
+Plugin 'scrooloose/nerdtree'
+Plugin 'tpope/vim-obsession'
+Plugin 'tpope/vim-surround'
+Plugin 'vim-scripts/genutils'
+Plugin 'vim-scripts/PushPop.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -52,16 +54,16 @@ filetype plugin indent on    " required
 " see :h vundle for more details or wiki for FAQ
 " Put your non-Plugin stuff after this line
 
-" jk will switch between modes 
+" jk will switch between modes
 :imap jk <Esc>
 
 " Set indentation
 :set tabstop=2
-:set expandtab 
+:set expandtab
 :set shiftwidth=2
-:set autoindent 
+:set autoindent
 :set smartindent
-:set cindent   
+:set cindent
 
 " :W will write with sudo permissions
 command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
@@ -136,3 +138,6 @@ autocmd BufWritePre * call TrimWhiteSpace()
 
 map <F2> :call TrimWhiteSpace()<CR>
 map! <F2> :call TrimWhiteSpace()<CR>
+
+" for jsx format with .js files
+let g:jsx_ext_required = 0
