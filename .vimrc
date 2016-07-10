@@ -164,4 +164,9 @@ if filereadable(obsessfile)
 else
   exe 'silent' 'mksession' obsessfile
 endif
+
+" set ctrlp to use cwd
+let g:ctrlp_working_path_mode = 'rwa'
+
 autocmd VimEnter * exe 'Obsess' obsessfile
+autocmd VimEnter * exe 'cd' $PWD
