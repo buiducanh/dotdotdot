@@ -158,3 +158,5 @@ endfunction
 let g:ctrlp_working_path_mode = 'rwa'
 
 autocmd VimEnter * exe 'cd' $PWD
+autocmd InsertLeave * :set nonumber relativenumber
+autocmd InsertEnter * :set number norelativenumber
