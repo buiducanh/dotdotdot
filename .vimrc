@@ -154,19 +154,7 @@ function! MkdirIfNone (dir)
   endif
 endfunction
 
-" set Obsess
-let obsessfile =expand('~/.vim/session/Session.vim')
-call MkdirIfNone(fnamemodify(obsessfile, ':p:h'))
-if filereadable(obsessfile)
-      \ && getfsize(obsessfile) > 0
-      \ && readfile(obsessfile, '', 1)[0] ==# 'let SessionLoad = 1'
-  exe 'silent' 'source' fnameescape(obsessfile)
-else
-  exe 'silent' 'mksession' obsessfile
-endif
-
 " set ctrlp to use cwd
 let g:ctrlp_working_path_mode = 'rwa'
 
-autocmd VimEnter * exe 'Obsess' obsessfile
 autocmd VimEnter * exe 'cd' $PWD
