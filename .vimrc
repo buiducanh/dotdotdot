@@ -38,6 +38,7 @@ Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-surround'
 Plugin 'vim-scripts/genutils'
 Plugin 'vim-scripts/PushPop.vim'
+Plugin 'mileszs/ack.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -160,3 +161,11 @@ let g:ctrlp_working_path_mode = 'rwa'
 autocmd VimEnter * exe 'cd' $PWD
 autocmd InsertLeave * :set nonumber relativenumber
 autocmd InsertEnter * :set number norelativenumber
+
+" set up ack.vim
+" need to install ack and ag
+if executable('ag')
+  let g:ackprg = 'ag --vimgrep'
+endif
+cnoreabbrev Ack Ack!
+nnoremap <Leader>a :Ack!<Space>
