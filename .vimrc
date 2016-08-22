@@ -170,3 +170,5 @@ if executable('ag')
 endif
 cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
+set cursorline
+set colorcolumn=80
