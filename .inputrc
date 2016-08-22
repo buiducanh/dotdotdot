@@ -1,0 +1,10 @@
+# Remap ESC to use my double 'i' keypress to toggle insert or movement
+# mode.
+$if mode=vi
+    set keymap vi-command
+    "ii": vi-insertion-mode
+    set keymap vi-insert
+    "ii": vi-movement-mode
+$endif
+$include /etc/inputrc
+set completion-ignore-case On
