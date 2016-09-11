@@ -1,7 +1,15 @@
+gitstatus() {
+  if [ "$#" -ne 0 ]; then
+    git "$@"
+  else
+    git status
+  fi
+}
+
 alias setclip='xclip -selection c'
 alias getclip='xclip -selection clipboard -o'
-alias g='git'
+alias g=gitstatus
 alias ..='cd ../'
 alias ...='cd ../../'
 alias ....='cd ../../../'
-alias ggsync='(cd ~/Google\ Drive && grive)' 
+alias ggsync='(cd ~/Google\ Drive && grive)'
