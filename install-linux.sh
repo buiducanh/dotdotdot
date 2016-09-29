@@ -96,6 +96,7 @@ cat ~/projects/dotdotdot/.vimrc > ~/.vimrc
 
 echo "Install vim plugins"
 if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
+  install ack-grep
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 fi
 vim +PluginInstall +qall
