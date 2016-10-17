@@ -173,3 +173,5 @@ cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
 set cursorline
 set colorcolumn=80
+
+let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
