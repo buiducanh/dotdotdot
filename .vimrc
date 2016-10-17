@@ -41,6 +41,7 @@ Plugin 'tpope/vim-eunuch'
 Plugin 'vim-scripts/genutils'
 Plugin 'vim-scripts/PushPop.vim'
 Plugin 'mileszs/ack.vim'
+Plugin 'Valloric/YouCompleteMe'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -73,6 +74,7 @@ command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
 
 " syntax highlight
 syntax on
+colorscheme seattle
 
 " fix press enter or command to continue
 let g:bufferline_echo=0
@@ -87,7 +89,6 @@ function! UnMinify()
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
 endfunction
-:imap jk <Esc>
 
 " indentation
 set backspace=2
@@ -160,7 +161,6 @@ endfunction
 " set ctrlp to use cwd
 let g:ctrlp_working_path_mode = 'rwa'
 
-autocmd VimEnter * exe 'cd' $PWD
 autocmd InsertLeave * :set nonumber relativenumber
 autocmd InsertEnter * :set number norelativenumber
 
