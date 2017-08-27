@@ -118,3 +118,10 @@ fi
 source ~/.git-prompt.sh
 PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '
 set -o vi
+
+export NVM_DIR="/home/$USER/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+alias nvminit="$NVM_DIR/nvm.sh"
+
+gdrive="/mnt/c/Users/bduca/Google Drive"
+shopt -s direxpand

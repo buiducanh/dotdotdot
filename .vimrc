@@ -1,5 +1,5 @@
 set nocompatible              " be iMproved, required
-let mapleader=" "
+let mapleader="."
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
@@ -42,6 +42,7 @@ Plugin 'vim-scripts/genutils'
 Plugin 'vim-scripts/PushPop.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'flazz/vim-colorschemes'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -74,7 +75,11 @@ command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
 
 " syntax highlight
 syntax on
+
+" Choose a theme
 colorscheme seattle
+" colorscheme elise
+
 
 " fix press enter or command to continue
 let g:bufferline_echo=0
@@ -89,6 +94,7 @@ function! UnMinify()
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
 endfunction
+:imap jk <Esc>
 
 " indentation
 set backspace=2
@@ -175,3 +181,37 @@ set cursorline
 set colorcolumn=80
 
 let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
+
+command Pw :silent :r !win32yank -o --lf
+cabbrev pw Pw
+
+function! YankVisualRange()
+  " Get the start and end positions of the current range
+  let StartPosition = getpos("'<")
+  let EndPosition = getpos("'>")
+  let Lines = []
+
+  " If the start and end of the range are on the same line
+  if StartPosition[1] == EndPosition[1]
+      " Just extract the relevant part of the line
+      call add(l:Lines, getline(StartPosition[1])[StartPosition[2]-1:EndPosition[2]-1])
+  else
+      " Otherwise, get the end of the first line
+      call add(l:Lines, getline(StartPosition[1])[StartPosition[2]-1:])
+
+      " Then the all of the intermediate lines
+      for LineNum in range(StartPosition[1]+1, EndPosition[1]-1)
+          call add(l:Lines, getline(LineNum))
+      endfor
+      " Then the start of the last line
+      call add(l:Lines, getline(EndPosition[1])[:EndPosition[2]-1])
+  endif
+
+  call writefile(l:Lines, '/tmp/vimyank.tmp')
+  silent !win32yank -i --crlf < /tmp/vimyank.tmp
+  execute "redraw!"
+endfunction
+
+command -range Cw <line1>,<line2>call YankVisualRange()
+cabbrev cw Cw
+map <Leader>y :call YankVisualRange()<cr>
