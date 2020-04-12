@@ -17,8 +17,8 @@ flags = [
     # headers will be compiled as C headers. You don't want that so ALWAYS specify
     # a "-std=<something>".
     # For a C project, you would set this to something like 'c99' instead of
-    # 'c++11'.
-    '-std=c++11',
+    # 'c++14'.
+    '-std=c++14',
     # ...and the same thing goes for the magic -x option which specifies the
     # language that the files to be compiled are written in. This is mostly
     # relevant for c++ headers.
@@ -80,11 +80,11 @@ def MakeRelativePathsInFlagsAbsolute( flags, working_directory ):
   return new_flags
 
 
-def FlagsForFile( filename ):
+def Settings( **kwargs ):
   if database:
     # Bear in mind that compilation_info.compiler_flags_ does NOT return a
     # python list, but a "list-like" StringVec object
-    compilation_info = database.GetCompilationInfoForFile( filename )
+    compilation_info = database.GetCompilationInfoForFile( kwargs['filename'] )
     final_flags = MakeRelativePathsInFlagsAbsolute(
       compilation_info.compiler_flags_,
       compilation_info.compiler_working_dir_ )

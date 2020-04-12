@@ -74,6 +74,10 @@ if ! command -v make >/dev/null 2>&1; then
   install build-essential
 fi
 
+if ! command -v cmake >/dev/null 2>&1; then
+  install cmake
+fi
+
 if ! command -v aclocal >/dev/null 2>&1; then
   install autotools-dev
   install automake
@@ -82,7 +86,6 @@ fi
 echo "Prepare .ssh config"
 userlist=$(dirname "$HOME")
 username=$(ls "$userlist" -1 | head -n1)
-echo "$username"
 sudo chown "$username":"$username" ~/projects/dotdotdot/.ssh/config
 symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
 sudo chown "$username":"$username" ~/.ssh/config
@@ -150,6 +153,12 @@ if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 fi
 vim +PluginInstall +qall
+python3installed=$(apt -qq list python3-dev | grep -c "installed")
+if [[ "$python3installed" -eq 0 ]]; then
+  echo "Install python3-dev"
+  install python3-dev
+fi
+(cd ~/.vim/bundle/YouCompleteMe && python3 install.py --clangd-completer)
 
 echo "Reload Bash configs"
 source ~/.bashrc
