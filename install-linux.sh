@@ -27,8 +27,8 @@ uninstall() {
 # fi
 
 sudo apt-get update -y
-name=$(read -p "input your name for Git")
-email=$(read -p "input your email for Git")
+name=$(read -p "input your name for Git: ")
+email=$(read -p "input your email for Git: ")
 if ! command -v git >/dev/null 2>&1; then
   echo "Install git"
   install git
