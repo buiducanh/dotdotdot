@@ -29,20 +29,20 @@ Plugin 'gmarik/Vundle.vim'
 "Plugin 'leafgarland/typescript-vim'
 "Plugin 'Quramy/tsuquyomi'
 Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'mxw/vim-jsx'
-Plugin 'pangloss/vim-javascript'
-Plugin 'Shougo/unite.vim'
-Plugin 'Shougo/unite-outline'
-Plugin 'Shougo/vimproc.vim'
+"Plugin 'mxw/vim-jsx'
+"Plugin 'pangloss/vim-javascript'
+"Plugin 'Shougo/unite.vim'
+"Plugin 'Shougo/unite-outline'
+"Plugin 'Shougo/vimproc.vim'
 Plugin 'scrooloose/nerdtree'
-Plugin 'tpope/vim-obsession'
+"Plugin 'tpope/vim-obsession'
 Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-eunuch'
-Plugin 'vim-scripts/genutils'
-Plugin 'vim-scripts/PushPop.vim'
+"Plugin 'tpope/vim-eunuch'
+"Plugin 'vim-scripts/genutils'
+"Plugin 'vim-scripts/PushPop.vim'
 Plugin 'mileszs/ack.vim'
 Plugin 'Valloric/YouCompleteMe'
-Plugin 'flazz/vim-colorschemes'
+"Plugin 'flazz/vim-colorschemes'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -69,6 +69,9 @@ filetype plugin indent on    " required
 :set autoindent
 :set smartindent
 :set cindent
+:set backspace=2
+:set softtabstop=0
+:set smarttab
 
 " :W will write with sudo permissions
 command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
@@ -77,9 +80,8 @@ command W sil exec 'w !sudo tee ' . shellescape(@%, 1) . ' >/dev/null'
 syntax on
 
 " Choose a theme
-colorscheme seattle
+" colorscheme seattle
 " colorscheme elise
-
 
 " fix press enter or command to continue
 let g:bufferline_echo=0
@@ -94,11 +96,7 @@ function! UnMinify()
     %s/[^\s]\zs[=&|]\+\ze[^\s]/ \0 /g
     normal ggVG=
 endfunction
-:imap jk <Esc>
 
-" indentation
-set backspace=2
-set tabstop=4 softtabstop=0 expandtab shiftwidth=2 smarttab
 
 " enable filetype detection:
 filetype on
@@ -131,7 +129,7 @@ set statusline+=%=      "left/right separator
 set statusline+=%c,     "cursor column
 set statusline+=%l/%L   "cursor line/total lines
 set statusline+=\ %P    "percent through file
-set statusline+=%{ObsessionStatus()}
+"set statusline+=%{ObsessionStatus()}
 set laststatus=2
 
 " Removes trailing spaces
@@ -177,41 +175,6 @@ if executable('ag')
 endif
 cnoreabbrev Ack Ack!
 nnoremap <Leader>a :Ack!<Space>
-set cursorline
 set colorcolumn=80
 
 let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
-
-command Pw :silent :r !win32yank -o --lf
-cabbrev pw Pw
-
-function! YankVisualRange()
-  " Get the start and end positions of the current range
-  let StartPosition = getpos("'<")
-  let EndPosition = getpos("'>")
-  let Lines = []
-
-  " If the start and end of the range are on the same line
-  if StartPosition[1] == EndPosition[1]
-      " Just extract the relevant part of the line
-      call add(l:Lines, getline(StartPosition[1])[StartPosition[2]-1:EndPosition[2]-1])
-  else
-      " Otherwise, get the end of the first line
-      call add(l:Lines, getline(StartPosition[1])[StartPosition[2]-1:])
-
-      " Then the all of the intermediate lines
-      for LineNum in range(StartPosition[1]+1, EndPosition[1]-1)
-          call add(l:Lines, getline(LineNum))
-      endfor
-      " Then the start of the last line
-      call add(l:Lines, getline(EndPosition[1])[:EndPosition[2]-1])
-  endif
-
-  call writefile(l:Lines, '/tmp/vimyank.tmp')
-  silent !win32yank -i --crlf < /tmp/vimyank.tmp
-  execute "redraw!"
-endfunction
-
-command -range Cw <line1>,<line2>call YankVisualRange()
-cabbrev cw Cw
-map <Leader>y :call YankVisualRange()<cr>

@@ -1,10 +1,21 @@
-# Remap ESC to use my double 'i' keypress to toggle insert or movement
+# Remap ESC to use 'jk' keypress to toggle insert or movement
 # mode.
 $if mode=vi
     set keymap vi-command
-    "ii": vi-insertion-mode
+    "jk": vi-insertion-mode
+    # Insert the arguments from the last command
+    "p": "i !!*\r"
     set keymap vi-insert
-    "ii": vi-movement-mode
+    "jk": vi-movement-mode
+    # Needed because binding 'p' in command mode above wipes its insert mode
+    # function, too. This fixes that, and will insert 'p' when you type 'p'.
+    "p": self-insert
 $endif
 $include /etc/inputrc
-set completion-ignore-case On
+# Show all completions as soon as I press tab, even if there's more than one
+set show-all-if-ambiguous on
+# Ignore case
+set completion-ignore-case on
+# on menu-complete, first display the common prefix, then cycle through the
+# options when hitting TAB
+set menu-complete-display-prefix on

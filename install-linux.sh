@@ -17,23 +17,22 @@ uninstall() {
   fi
 }
 
-echo "Set up xsel"
+# echo "Set up xsel"
 
-if ! command -v xsel >/dev/null 2>&1; then
-  install xsel
-fi
-if ! command -v xclip >/dev/null 2>&1; then
-  uninstall xclip
-fi
+# if ! command -v xsel >/dev/null 2>&1; then
+#   install xsel
+# fi
+# if ! command -v xclip >/dev/null 2>&1; then
+#   uninstall xclip
+# fi
 
 echo "Install git"
 if ! command -v git >/dev/null 2>&1; then
   install git
 fi
 
-echo "Prepare projects and downloads directory"
+echo "Prepare projects directory"
 mkdir -p ~/projects
-mkdir -p ~/downloads
 
 echo "Prepare dotfiles"
 if [ ! -d ~/projects/dotdotdot ]; then
@@ -66,15 +65,16 @@ cat ~/projects/dotdotdot/.inputrc > ~/.inputrc
 
 echo "Install tmux"
 if [[ ! $(echo "$(tmux -V | cut -d' ' -f2) > 2" | bc) -eq 1 ]]; then
+  tmpdir=$(mktemp -d)
   install libevent-dev
   install libncurses5-dev
-  (cd ~/downloads && git clone https://github.com/tmux/tmux.git)
-  (cd ~/downloads/tmux \
-  && sh autogen.sh \
-  && ./configure && make)
+  pushd "$tmpdir"
+  git clone https://github.com/tmux/tmux.git
+  sh autogen.sh \
+  && ./configure && make
   rm /usr/bin/tmux
-  mv ~/downloads/tmux/tmux /usr/bin/
-
+  mv ./tmux/tmux /usr/bin/
+  popd
 fi
 
 echo "Prepare tmux.conf"
@@ -93,6 +93,12 @@ fi
 
 echo "Prepare vimrc"
 cat ~/projects/dotdotdot/.vimrc > ~/.vimrc
+
+echo "Prepare YouCompleteMe Conf for vim"
+if [[ ! -d ~/.vim ]]; then
+  mkdir ~/.vim
+fi
+cat ~/projects/dotdotdot/.ycm_extra_conf.py > ~/.vim/.ycm_extra_conf.py
 
 echo "Install vim plugins"
 if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
