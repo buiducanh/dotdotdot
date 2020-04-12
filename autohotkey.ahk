@@ -15,7 +15,7 @@ IsWindowVisible(pProcessName,pID) {
     DetectHiddenWindows, On
     static WS_VISIBLE := 0x10000000
     WinGet, Style, Style, ahk_exe %pProcessName% ahk_pid %pID%
-    return (Style & WS_VISIBLE)
+    Return (Style & WS_VISIBLE)
 }
 
 ^!Space:: ; open wsltty
@@ -41,15 +41,49 @@ Else  {
     WinShow, % "ahk_pid " pID1
     WinActivate, % "ahk_pid " pID1
 }
-return
+Return
+
+^!F::WinMaximize, A
 
 !`::    ; Next window
+    DetectHiddenWindows, Off
     WinGet, ActiveExe, ProcessName, A
+    WinGetTitle, ActiveTitle, A
+    If (ActiveTitle = "File Explorer") {
+        WinGet, ActiveWindows, Count, % "File Explorer ahk_exe " ActiveExe " ahk_class CabinetWClass"
+    }
+    Else {
+        WinGet, ActiveWindows, Count, % "ahk_exe " ActiveExe
+    }
+    If (ActiveWindows <= 1) {
+        Return
+    }
     WinSet, Bottom,, A
-    WinActivate, ahk_exe %ActiveExe%
-return
+    If (ActiveTitle = "File Explorer") {
+        WinActivate, % "File Explorer ahk_exe " ActiveExe " ahk_class CabinetWClass"
+    }
+    Else {
+        WinActivate, % "ahk_exe " ActiveExe
+    }
+Return
 
 !~::    ; Last window
+    DetectHiddenWindows, Off
     WinGet, ActiveExe, ProcessName, A
-    WinActivateBottom, ahk_exe %ActiveExe%
-return
+    WinGetTitle, ActiveTitle, A
+    If (ActiveTitle = "File Explorer") {
+        WinGet, ActiveWindows, Count, % "File Explorer ahk_exe " ActiveExe " ahk_class CabinetWClass"
+    }
+    Else {
+        WinGet, ActiveWindows, Count, % "ahk_exe " ActiveExe
+    }
+    If (ActiveWindows <= 1) {
+        Return
+    }
+    If (ActiveTitle = "File Explorer") {
+        WinActivateBottom, % "File Explorer ahk_exe " ActiveExe " ahk_class CabinetWClass"
+    }
+    Else {
+        WinActivateBottom, % "ahk_exe " ActiveExe
+    }
+Return
