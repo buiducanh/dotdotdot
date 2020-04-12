@@ -26,13 +26,23 @@ uninstall() {
 #   uninstall xclip
 # fi
 
-echo "Install git"
+name=$(input "input your name for Git")
+email=$(input "input your email for Git")
 if ! command -v git >/dev/null 2>&1; then
+  echo "Install git"
   install git
-  name=$(input "input your name for Git")
-  email=$(input "input your email for Git")
-  /usr/bin/git config --global user.name "Anh Bui"
-  /usr/bin/git config --global user.email "b.ducanh96@gmail.com"
+  /usr/bin/git config --global user.name "$name"
+  /usr/bin/git config --global user.email "$email"
+fi
+
+if ! command -v keychain >/dev/null 2>&1; then
+  echo "Install keychain"
+  install keychain
+fi
+
+if [[ ! -f ~/.ssh/id_rsa ]]; then
+  echo "Prepare git ssh key"
+  ssh-keygen -t rsa -b 4096 -c "$email"
 fi
 
 echo "Prepare projects directory"
@@ -60,6 +70,9 @@ cat ~/projects/dotdotdot/git-prompt.sh > ~/.git-prompt.sh
 
 echo "Prepare bashrc"
 cat ~/projects/dotdotdot/.bashrc > ~/.bashrc
+
+echo "Prepare .ssh config"
+cat ~/projects/dotdotdot/.ssh/config > ~/.ssh/config
 
 echo "Prepare bash_aliases"
 cat ~/projects/dotdotdot/.bash_aliases > ~/.bash_aliases
