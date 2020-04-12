@@ -26,8 +26,9 @@ uninstall() {
 #   uninstall xclip
 # fi
 
-name=$(input "input your name for Git")
-email=$(input "input your email for Git")
+sudo apt-get update -y
+name=$(read -p "input your name for Git")
+email=$(read -p "input your email for Git")
 if ! command -v git >/dev/null 2>&1; then
   echo "Install git"
   install git
@@ -49,8 +50,8 @@ echo "Prepare projects directory"
 mkdir -p ~/projects
 
 echo "Prepare dotfiles"
-if [ ! -d ~/projects/dotdotdot ]; then
-  git clone https://github.com/buiducanh/dotdotdot.git ~/projects/
+if [[ ! -d ~/projects/dotdotdot ]]; then
+  git clone git@github.com:buiducanh/dotdotdot.git ~/projects/
 else
   (cd ~/projects/dotdotdot && git pull)
 fi
