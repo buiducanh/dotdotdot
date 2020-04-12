@@ -23,6 +23,13 @@ symlinkSafe() {
   ln -sf "$target" "$dest"
 }
 
+clone() {
+  username="$1"
+  target="$2"
+  dest="$3"
+  su "$username" -c "git clone $target ${dest//\~/$HOME}"
+}
+
 uninstall() {
   if command -v apt-get >/dev/null 2>&1; then
     sudo apt-get remove -y "$@"
@@ -37,6 +44,9 @@ uninstall() {
 # if ! command -v xclip >/dev/null 2>&1; then
 #   uninstall xclip
 # fi
+
+userlist=$(dirname "$HOME")
+username=$(ls "$userlist" -1 | head -n1)
 
 sudo apt-get update -y
 if ! command -v git >/dev/null 2>&1; then
@@ -64,7 +74,7 @@ mkdir -p ~/projects
 
 echo "Prepare dotfiles"
 if [[ ! -d "$HOME/projects/dotdotdot" ]]; then
-  git clone git@github.com:buiducanh/dotdotdot.git ~/projects/
+  clone "$username" git@github.com:buiducanh/dotdotdot.git ~/projects/
 else
   (cd ~/projects/dotdotdot && git pull)
 fi
@@ -84,11 +94,7 @@ if ! command -v aclocal >/dev/null 2>&1; then
 fi
 
 echo "Prepare .ssh config"
-userlist=$(dirname "$HOME")
-username=$(ls "$userlist" -1 | head -n1)
-sudo chown "$username":"$username" ~/projects/dotdotdot/.ssh/config
 symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
-sudo chown "$username":"$username" ~/.ssh/config
 
 echo "Prepare git prompt"
 symlinkSafe ~/projects/dotdotdot/git-prompt.sh ~/.git-prompt.sh
@@ -112,7 +118,7 @@ if [[ ! $(echo "$(tmux -V | cut -d' ' -f2) > 2" | bc) -eq 1 ]]; then
   install libevent-dev
   install libncurses5-dev
   pushd "$tmpdir"
-  git clone https://github.com/tmux/tmux.git
+  clone "$username" https://github.com/tmux/tmux.git
   sh autogen.sh \
   && ./configure && make
   rm /usr/bin/tmux
@@ -125,7 +131,7 @@ symlinkSafe ~/projects/dotdotdot/.tmux.conf ~/.tmux.conf
 
 if [[ ! -d ~/.tmux/plugins/tpm ]]; then
   echo "Install tmux plugin manager"
-  git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+  clone "$username" https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   tmux run-shell ~/.tmux/plugins/tpm/bindings/install_plugins
 fi
 
@@ -148,9 +154,14 @@ if ! command -v ack >/dev/null 2>&1; then
   install ack-grep
 fi
 
+if ! command -v ag >/dev/null 2>&1; then
+  echo "Install silversearcher-ag"
+  install silversearcher-ag
+fi
+
 if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
   echo "Install vim plugins"
-  git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  clone "$username" https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 fi
 vim +PluginInstall +qall
 python3installed=$(apt -qq list python3-dev | grep -c "installed")
@@ -158,8 +169,52 @@ if [[ "$python3installed" -eq 0 ]]; then
   echo "Install python3-dev"
   install python3-dev
 fi
-(cd ~/.vim/bundle/YouCompleteMe && python3 install.py --clangd-completer)
+
+clanginstalled=$(apt list --installed | grep -c "clang")
+if [[ "$clanginstalled" -eq 0 ]]; then
+  echo "Install clang"
+  bash -c "$(wget -q -O - https://apt.llvm.org/llvm.sh | sed -e '\$ a apt-get install -y clang-tidy-\$LLVM_VERSION')"
+fi
+
+(cd ~/.vim/bundle/YouCompleteMe && python3 install.py --clang-completer --system-libclang)
 
 echo "Reload Bash configs"
 source ~/.bashrc
 bind -f ~/.inputrc
+
+echo "Set up correct permissions for projects directory"
+sudo chown -R "$username":"$username" ~/projects
+
+pipnotinstalled=$(python3 -m pip 2>&1 | grep -c "No module named")
+if [[ "$pipnotinstalled" -eq 1 ]]; then
+  echo "Install pip"
+  install python3-pip
+  su "$username" -c "python3 -m pip install --upgrade pip setuptools wheel"
+fi
+
+if [[ ! -f ~/projects/.pythonenv/bin/activate ]]; then
+  echo "Initializing Python env using venv"
+  venvinstalled=$(apt list --installed | grep -c "python3-venv")
+  if [[ "$venvinstalled" -eq 0 ]]; then
+    echo "Installing python3 venv"
+    install python3-venv
+  fi
+  su "$username" -c "mkdir -p $HOME/projects/.pythonenv"
+  su "$username" -c "python3 -m venv $HOME/projects/.pythonenv"
+  source ~/projects/.pythonenv/bin/activate
+fi
+
+gripinstalled=$(python3 -m pip list | grep -c "grip")
+if [[ "$gripinstalled" -eq 0 ]]; then
+  echo "Install grip"
+  su "$username" -c "source ~/projects/.pythonenv/bin/activate; python3 -m pip install grip"
+fi
+
+griptokeninstalled=$(cat ~/.grip/settings.py | grep -c "PASSWORD")
+if [[ "$griptokeninstalled" -eq 0 ]]; then
+  echo "Installing python grip token"
+  wopen https://github.com/settings/tokens
+  token=$(read -p "Paste token here: ")
+  su "$username" -c "mkdir ~/.grip"
+  su "$username" -c "echo \"PASSWORD = '$token'\" > ~/.grip/settings.py"
+fi

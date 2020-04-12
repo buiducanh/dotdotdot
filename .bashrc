@@ -152,3 +152,10 @@ if [[ $- == *i* ]]; then
       fi
     fi
 fi
+
+# activate default python env
+source ~/projects/.pythonenv/bin/activate
+
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+  exec tmux new-session -D -A -s msession
+fi

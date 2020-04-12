@@ -171,13 +171,42 @@ autocmd InsertEnter * :set number norelativenumber
 " set up ack.vim
 " need to install ack and ag
 if executable('ag')
-  let g:ackprg = 'ag --vimgrep'
+  let g:ackprg = 'ag --hidden --vimgrep'
 endif
+
 cnoreabbrev Ack Ack!
-nnoremap <Leader>a :Ack!<Space>
+function Search(cmd, string) abort
+  let saved_shellpipe = &shellpipe
+  let &shellpipe = '>'
+  try
+    execute a:cmd shellescape(a:string, 1)
+  finally
+    let &shellpipe = saved_shellpipe
+  endtry
+endfunction
+nnoremap <Leader>a :Search!<Space>
+command! -bang -nargs=* -complete=file Search call Search('Ack<bang>', <q-args>)
+
+" set color for column 80
 set colorcolumn=80
+highlight ColorColumn ctermbg=238
 
 let g:ycm_global_ycm_extra_conf = "~/.vim/.ycm_extra_conf.py"
 
 " show hidden files
 let NERDTreeShowHidden=1
+
+" markdown preview toggle based on hotkey
+function! OpenMarkdownPreview() abort
+  if exists('s:markdown_job_id') && s:markdown_job_id > 0
+    call jobstop(s:markdown_job_id)
+    unlet s:markdown_job_id
+  endif
+  let s:markdown_job_id = jobstart(
+    \ 'grip ' . shellescape(expand('%:p')) . " 0 2>&1 | awk '/Running/ { printf $4 }'",
+    \ { 'on_stdout': 'OnGripStart', 'pty': 1 })
+  function! OnGripStart(_, output, __)
+    call system('wopen ' . a:output[0])
+  endfunction
+endfunction
+nnoremap <Leader>m :call OpenMarkdownPreview()<CR>

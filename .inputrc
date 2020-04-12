@@ -1,12 +1,12 @@
-# Remap ESC to use 'jk' keypress to toggle insert or movement
 # mode.
 $if mode=vi
     set keymap vi-command
-    "jk": vi-insertion-mode
+    # Remap ESC to use 'ii' keypress to toggle insert or movement
+    # "jk": vi-insertion-mode
     # Insert the arguments from the last command
     "p": "i !!*\r"
     set keymap vi-insert
-    "jk": vi-movement-mode
+    # "jk": vi-movement-mode
     # Needed because binding 'p' in command mode above wipes its insert mode
     # function, too. This fixes that, and will insert 'p' when you type 'p'.
     "p": self-insert
