@@ -39,23 +39,24 @@ uninstall() {
 # fi
 
 sudo apt-get update -y
-name=$(read -p "input your name for Git: ")
-email=$(read -p "input your email for Git: ")
 if ! command -v git >/dev/null 2>&1; then
   echo "Install git"
   install git
+  name=$(read -p "input your name for Git: ")
+  email=$(read -p "input your email for Git: ")
   /usr/bin/git config --global user.name "$name"
   /usr/bin/git config --global user.email "$email"
+  if [[ ! -f ~/.ssh/id_rsa ]]; then
+    echo "Prepare git ssh key"
+    ssh-keygen -t rsa -b 4096 -c "$email"
+  fi
 fi
+eval $(ssh-agent -s)
+ssh-add ~/.ssh/id_rsa
 
 if ! command -v keychain >/dev/null 2>&1; then
   echo "Install keychain"
   install keychain
-fi
-
-if [[ ! -f ~/.ssh/id_rsa ]]; then
-  echo "Prepare git ssh key"
-  ssh-keygen -t rsa -b 4096 -c "$email"
 fi
 
 echo "Prepare projects directory"
@@ -78,14 +79,15 @@ if ! command -v aclocal >/dev/null 2>&1; then
   install automake
 fi
 
+echo "Prepare .ssh config"
+symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
+chown "$USER":"$USER" ~/.ssh/config
+
 echo "Prepare git prompt"
 symlinkSafe ~/projects/dotdotdot/git-prompt.sh ~/.git-prompt.sh
 
 echo "Prepare bashrc"
 symlinkSafe ~/projects/dotdotdot/.bashrc ~/.bashrc
-
-echo "Prepare .ssh config"
-symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
 
 echo "Prepare bash_aliases"
 symlinkSafe ~/projects/dotdotdot/.bash_aliases ~/.bash_aliases
