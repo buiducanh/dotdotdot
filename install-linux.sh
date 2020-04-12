@@ -80,9 +80,12 @@ if ! command -v aclocal >/dev/null 2>&1; then
 fi
 
 echo "Prepare .ssh config"
-sudo chown "$USER":"$USER" ~/projects/dotdotdot/.ssh/config
+userlist=$(dirname "$HOME")
+username=$(ls "$userlist" -1 | head -n1)
+echo "$username"
+sudo chown "$username":"$username" ~/projects/dotdotdot/.ssh/config
 symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
-sudo chown "$USER":"$USER" ~/.ssh/config
+sudo chown "$username":"$username" ~/.ssh/config
 
 echo "Prepare git prompt"
 symlinkSafe ~/projects/dotdotdot/git-prompt.sh ~/.git-prompt.sh
