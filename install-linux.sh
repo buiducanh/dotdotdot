@@ -7,13 +7,13 @@ fi
 
 install() {
   if command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get install "$@"
+    sudo apt-get install -y "$@"
   fi
 }
 
 uninstall() {
   if command -v apt-get >/dev/null 2>&1; then
-    sudo apt-get remove "$@"
+    sudo apt-get remove -y "$@"
   fi
 }
 
@@ -29,6 +29,10 @@ uninstall() {
 echo "Install git"
 if ! command -v git >/dev/null 2>&1; then
   install git
+  name=$(input "input your name for Git")
+  email=$(input "input your email for Git")
+  /usr/bin/git config --global user.name "Anh Bui"
+  /usr/bin/git config --global user.email "b.ducanh96@gmail.com"
 fi
 
 echo "Prepare projects directory"
@@ -63,8 +67,12 @@ cat ~/projects/dotdotdot/.bash_aliases > ~/.bash_aliases
 echo "Prepare inputrc"
 cat ~/projects/dotdotdot/.inputrc > ~/.inputrc
 
-echo "Install tmux"
 if [[ ! $(echo "$(tmux -V | cut -d' ' -f2) > 2" | bc) -eq 1 ]]; then
+  echo "Install tmux"
+  if command -v tmux >/dev/null 2>&1; then
+    echo "Uninstall tmux version below 2"
+    uninstall tmux
+  fi
   tmpdir=$(mktemp -d)
   install libevent-dev
   install libncurses5-dev
@@ -80,14 +88,14 @@ fi
 echo "Prepare tmux.conf"
 cat ~/projects/dotdotdot/.tmux.conf > ~/.tmux.conf
 
-echo "Install tmux plugin manager"
 if [[ ! -d ~/.tmux/plugins/tpm ]]; then
+  echo "Install tmux plugin manager"
   git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
   tmux run-shell ~/.tmux/plugins/tpm/bindings/install_plugins
 fi
 
-echo "Install vim"
 if [ -z "$(vim --version | grep -- -clipboard)" ]; then
+  echo "Install vim"
   install vim-gnome
 fi
 
@@ -100,9 +108,17 @@ if [[ ! -d ~/.vim ]]; then
 fi
 cat ~/projects/dotdotdot/.ycm_extra_conf.py > ~/.vim/.ycm_extra_conf.py
 
-echo "Install vim plugins"
-if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
+if ! command -v ack >/dev/null 2>&1; then
+  echo "Install ack-grep"
   install ack-grep
+fi
+
+if [ ! -d ~/.vim/bundle/Vundle.vim ]; then
+  echo "Install vim plugins"
   git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 fi
 vim +PluginInstall +qall
+
+echo "Reload Bash configs"
+source ~/.bashrc
+bind -f ~/.inputrc
