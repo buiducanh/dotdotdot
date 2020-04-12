@@ -11,6 +11,18 @@ install() {
   fi
 }
 
+symlinkSafe() {
+  target="$1"
+  dest="$2"
+  tmpdest="$dest"".orig"
+  if  [[ -e "$dest" ]]; then
+    if [[ ! -L "$dest" ]]; then
+      mv "$dest" "$tmpdest"
+    fi
+  fi
+  ln -sf "$target" "$dest"
+}
+
 uninstall() {
   if command -v apt-get >/dev/null 2>&1; then
     sudo apt-get remove -y "$@"
@@ -50,7 +62,7 @@ echo "Prepare projects directory"
 mkdir -p ~/projects
 
 echo "Prepare dotfiles"
-if [[ ! -d ~/projects/dotdotdot ]]; then
+if [[ ! -d "$HOME/projects/dotdotdot" ]]; then
   git clone git@github.com:buiducanh/dotdotdot.git ~/projects/
 else
   (cd ~/projects/dotdotdot && git pull)
@@ -67,19 +79,19 @@ if ! command -v aclocal >/dev/null 2>&1; then
 fi
 
 echo "Prepare git prompt"
-cat ~/projects/dotdotdot/git-prompt.sh > ~/.git-prompt.sh
+symlinkSafe ~/projects/dotdotdot/git-prompt.sh ~/.git-prompt.sh
 
 echo "Prepare bashrc"
-cat ~/projects/dotdotdot/.bashrc > ~/.bashrc
+symlinkSafe ~/projects/dotdotdot/.bashrc ~/.bashrc
 
 echo "Prepare .ssh config"
-cat ~/projects/dotdotdot/.ssh/config > ~/.ssh/config
+symlinkSafe ~/projects/dotdotdot/.ssh/config ~/.ssh/config
 
 echo "Prepare bash_aliases"
-cat ~/projects/dotdotdot/.bash_aliases > ~/.bash_aliases
+symlinkSafe ~/projects/dotdotdot/.bash_aliases ~/.bash_aliases
 
 echo "Prepare inputrc"
-cat ~/projects/dotdotdot/.inputrc > ~/.inputrc
+symlinkSafe ~/projects/dotdotdot/.inputrc ~/.inputrc
 
 if [[ ! $(echo "$(tmux -V | cut -d' ' -f2) > 2" | bc) -eq 1 ]]; then
   echo "Install tmux"
@@ -100,7 +112,7 @@ if [[ ! $(echo "$(tmux -V | cut -d' ' -f2) > 2" | bc) -eq 1 ]]; then
 fi
 
 echo "Prepare tmux.conf"
-cat ~/projects/dotdotdot/.tmux.conf > ~/.tmux.conf
+symlinkSafe ~/projects/dotdotdot/.tmux.conf ~/.tmux.conf
 
 if [[ ! -d ~/.tmux/plugins/tpm ]]; then
   echo "Install tmux plugin manager"
@@ -114,13 +126,13 @@ if [ -z "$(vim --version | grep -- -clipboard)" ]; then
 fi
 
 echo "Prepare vimrc"
-cat ~/projects/dotdotdot/.vimrc > ~/.vimrc
+symlinkSafe ~/projects/dotdotdot/.vimrc ~/.vimrc
 
 echo "Prepare YouCompleteMe Conf for vim"
 if [[ ! -d ~/.vim ]]; then
   mkdir ~/.vim
 fi
-cat ~/projects/dotdotdot/.ycm_extra_conf.py > ~/.vim/.ycm_extra_conf.py
+symlinkSafe ~/projects/dotdotdot/.ycm_extra_conf.py ~/.vim/.ycm_extra_conf.py
 
 if ! command -v ack >/dev/null 2>&1; then
   echo "Install ack-grep"
