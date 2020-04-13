@@ -128,7 +128,7 @@ shopt -s direxpand
 if [[ $- == *i* ]]; then
     # set up ssh key server
     if [[ -x /usr/bin/keychain ]]; then
-      eval $(keychain --eval --agents ssh id_rsa)
+      eval $(keychain --eval)
     else
       # Start ssh agent
       SSH_ENV=$HOME/.ssh/environment
