@@ -198,15 +198,55 @@ let NERDTreeShowHidden=1
 
 " markdown preview toggle based on hotkey
 function! OpenMarkdownPreview() abort
-  if exists('s:markdown_job_id') && s:markdown_job_id > 0
-    call jobstop(s:markdown_job_id)
-    unlet s:markdown_job_id
-  endif
-  let s:markdown_job_id = jobstart(
-    \ 'grip ' . shellescape(expand('%:p')) . " 0 2>&1 | awk '/Running/ { printf $4 }'",
-    \ { 'on_stdout': 'OnGripStart', 'pty': 1 })
-  function! OnGripStart(_, output, __)
-    call system('wopen ' . a:output[0])
+  function! Print(_, output) abort
+    echom "" . a:output
   endfunction
+
+  function! OnGripFoundRunning(chRunning, outputRunning) abort
+    if a:outputRunning !~ '.*Running on \([^\s]*\)'
+      if !exists('s:markdown_render_host') || a:outputRunning != s:markdown_render_host
+        echom "Grip Found Running: " . a:outputRunning
+        call job_start(
+          \ ["bash", "-c", "cmd.exe /C start ". a:outputRunning],
+          \ { 'out_cb': 'Print', 'err_cb': 'Print' })
+        let s:markdown_render_host = a:outputRunning
+      endif
+    endif
+  endfunction
+
+  function! OnGrep(_, outputGrep) abort
+    if a:outputGrep =~ '.*Running on \([^\s]*\)'
+      let s:cut_grep_job = job_start(
+        \ ["cut", '-d', ' ', '-f5'],
+        \ { 'out_cb': 'OnGripFoundRunning', 'pty': 1, 'in_io': 'pipe' })
+      call ch_sendraw(s:cut_grep_job, a:outputGrep."\n")
+    endif
+  endfunction
+
+  function! OnGripStart(_, output) abort
+    if a:output =~ '.*Running on \([^\s]*\)'
+      let s:grep_grip_job = job_start(
+        \ ["grep", 'Running'],
+        \ { 'out_cb': 'OnGrep', 'pty': 1, 'in_io': 'pipe' })
+      call ch_sendraw(s:grep_grip_job, a:output."\n")
+    endif
+  endfunction
+
+  if exists('s:markdown_job_obj')
+    echom "Stopping job"
+    echom "Job Status: " . job_status(s:markdown_job_obj)
+    if job_status(s:markdown_job_obj) == "run"
+      echom "Stopping job"
+      call job_stop(s:markdown_job_obj)
+      unlet s:markdown_job_obj
+      unlet s:markdown_render_host
+    endif
+  endif
+  let grip="grip \"" . expand('%:p') . "\" 0 2>&1 | grep \"Running\" | cut -d\" \" -f5"
+  " echom "Running: " . grip
+  let s:markdown_job_obj = job_start(
+    \ ["grip", expand('%:p'), "0"],
+    \ { 'out_cb': 'OnGripStart', 'pty': 1 })
 endfunction
+
 nnoremap <Leader>m :call OpenMarkdownPreview()<CR>
