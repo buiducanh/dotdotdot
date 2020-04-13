@@ -22,7 +22,7 @@ IsWindowVisible(pProcessName,pID) {
 Process, Exist, mintty.exe
 If (ErrorLevel = 0) {
     Run % execTarget,,, pID1   
-    WinWait, ahk_pid %pID1%
+    WinWait, ahk_pid %pID1%,, 0
 }
 Else {
     pID1 := ErrorLevel

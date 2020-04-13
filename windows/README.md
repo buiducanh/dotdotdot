@@ -14,8 +14,11 @@ Enable-WindowsOptionalFeature -Online -FeatureName Microsoft-Windows-Subsystem-L
 4. configure font and theme in wsltty
 ## Setup autohotkey for custom global windows hotkey
 1. Install [Autohotkey](https://github.com/Lexikos/AutoHotkey_L/releases)
-2. run shell:startup
-3. copy [autohotkey.ahk](https://github.com/buiducanh/dotdotdot/blob/master/autohotkey.ahk) into the startup path, run it for your current session if necessary
+2. symlink from Windows Terminal Prompt into WSL
+```bat
+mklink %APPDATA%\Microsoft\Windows\"Start Menu"\Programs\Startup\autohotkey.ahk \\wsl$\Ubuntu\home\<username>\projects\dotdotdot\autohotkey.ahk
+```
+3. run the autohotkey if you have not
 ## Setup linux
 1. open wsltty
 2. download [install-linux.sh](https://github.com/buiducanh/dotdotdot/blob/master/install-linux.sh)
