@@ -20,6 +20,11 @@ mklink %APPDATA%\Microsoft\Windows\"Start Menu"\Programs\Startup\autohotkey.ahk 
 ```
 3. run the autohotkey if you have not
 ## Setup linux
+### Prerequisite
+1. make sure `sudo` doesn't reset $HOME env variable:
+    a. use `sudo visudo` to check that there is an #include directive
+    b. create a file in `/etc/sudoers.d/1_homeenv` with the following content: `Defaults env_keep += "HOME"`
+### Steps
 1. open wsltty
 2. download [install-linux.sh](https://github.com/buiducanh/dotdotdot/blob/master/install-linux.sh)
 3. run script to setup
