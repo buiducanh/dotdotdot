@@ -1,4 +1,5 @@
 # Instructions to set up Windows with WSL
+NOTE: if reading from within install.tar.gz, go straight to `Setup Linux`
 ## Set up WSL
 1. Open PowerShell as Administrator and run:
 ```PowerShell
@@ -20,13 +21,9 @@ mklink %APPDATA%\Microsoft\Windows\"Start Menu"\Programs\Startup\autohotkey.ahk 
 ```
 3. run the autohotkey if you have not
 ## Setup linux
-### Prerequisite
-1. make sure `sudo` doesn't reset $HOME env variable:
-    a. use `sudo visudo` to check that there is an #include directive
-    b. create a file in `/etc/sudoers.d/1_homeenv` with the following content: `Defaults env_keep += "HOME"`
 ### Steps
 1. open wsltty
-2. download [install-linux.sh](https://github.com/buiducanh/dotdotdot/blob/master/install-linux.sh)
-3. run script to setup
+2. download [install.tar.gz](https://github.com/buiducanh/dotdotdot/releases)
+3. run `./install-linux.sh` script to setup
 ## Setup github ssh key
 [Add ssh key](https://github.com/settings/keys)
