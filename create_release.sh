@@ -17,7 +17,7 @@ cp install-linux.sh build
 cp install_tmux.sh build
 cp windows/README.md build/README
 pushd build
-tar -czvf ./* install_tmux.sh
+tar -czvf install.tar.gz ./*
 popd
 cp build/install.tar.gz public
 popd
