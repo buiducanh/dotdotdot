@@ -15,10 +15,10 @@ mkdir -p public
 mkdir -p build
 cp install-linux.sh build
 cp install_tmux.sh build
+cp windows/README.md build/README
 pushd build
-tar -czvf install.tar.gz install-linux.sh install_tmux.sh
+tar -czvf ./* install_tmux.sh
 popd
-cp windows/README.md public/README
 cp build/install.tar.gz public
 popd
 
