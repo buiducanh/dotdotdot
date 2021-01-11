@@ -60,7 +60,7 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 
 " jk will switch between modes
-:imap jk <Esc>
+" :imap jk <Esc>
 
 " Set indentation
 :set tabstop=2

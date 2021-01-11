@@ -1,3 +1,10 @@
+$if term=linux
+	set vi-ins-mode-string \1\e[?0c\2
+	set vi-cmd-mode-string \1\e[?8c\2
+$else
+	set vi-ins-mode-string \1\e[6 q\2
+	set vi-cmd-mode-string \1\e[2 q\2
+$endif
 # mode.
 $if mode=vi
     set keymap vi-command
@@ -6,7 +13,8 @@ $if mode=vi
     # Insert the arguments from the last command
     "p": "i !!*\r"
     set keymap vi-insert
-    # "jk": vi-movement-mode
+    "^[": "\e"
+    "jk": "\e"
     # Needed because binding 'p' in command mode above wipes its insert mode
     # function, too. This fixes that, and will insert 'p' when you type 'p'.
     "p": self-insert
@@ -19,3 +27,4 @@ set completion-ignore-case on
 # on menu-complete, first display the common prefix, then cycle through the
 # options when hitting TAB
 set menu-complete-display-prefix on
+set editing-mode vi
