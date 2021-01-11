@@ -124,11 +124,13 @@ export NVM_DIR="/home/$USER/.nvm"
 
 shopt -s direxpand
 
+GITHUB_KEY_FILENAME="id_github"
+
 # is this an interactive shell?
 if [[ $- == *i* ]]; then
     # set up ssh key server
     if [[ -x /usr/bin/keychain ]]; then
-      eval $(keychain --eval)
+      eval $(keychain --eval $GITHUB_KEY_FILENAME)
     else
       # Start ssh agent
       SSH_ENV=$HOME/.ssh/environment
@@ -139,7 +141,7 @@ if [[ $- == *i* ]]; then
           /usr/bin/ssh-agent | sed 's/^echo/#echo/' > "${SSH_ENV}"
           chmod 600 "${SSH_ENV}"
           . "${SSH_ENV}" > /dev/null
-          /usr/bin/ssh-add
+          /usr/bin/ssh-add $GITHUB_KEY_FILENAME
       }
 
       if [ -f "${SSH_ENV}" ]; then
