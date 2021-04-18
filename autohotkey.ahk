@@ -18,7 +18,7 @@ IsWindowVisible(pProcessName,pID) {
     Return (Style & WS_VISIBLE)
 }
 
-#!Space:: ; open wsltty
++!Space:: ; open wsltty Shift + Alt + Space
 Process, Exist, mintty.exe
 If (ErrorLevel = 0) {
     Run % execTarget,,, pID1
@@ -43,7 +43,7 @@ Else  {
 }
 Return
 
-#!f::
+#!f:: ; Win + Alt + f
 WinGet, isMaximized, MinMax, A
 if (isMaximized = 1) {
   WinRestore, A
