@@ -18,6 +18,7 @@ IsWindowVisible(pProcessName,pID) {
     Return (Style & WS_VISIBLE)
 }
 
+#Space:: ; override keyboard layout switch
 +!Space:: ; open wsltty Shift + Alt + Space
 Process, Exist, mintty.exe
 If (ErrorLevel = 0) {
