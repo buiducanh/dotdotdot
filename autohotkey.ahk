@@ -18,7 +18,7 @@ IsWindowVisible(pProcessName,pID) {
     Return (Style & WS_VISIBLE)
 }
 
-+#Space:: ; open wsltty
+#!Space:: ; open wsltty
 Process, Exist, mintty.exe
 If (ErrorLevel = 0) {
     Run % execTarget,,, pID1
