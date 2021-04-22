@@ -17,23 +17,28 @@
         "command": "-workbench.action.previousEditor"
     },
     {
-        "key": "cmd+down",
+        "key": "ctrl+j j",
         "command": "workbench.action.terminal.focusNext",
         "when": "terminalFocus"
     },
     {
-        "key": "cmd+up",
+        "key": "ctrl+j k",
         "command": "workbench.action.terminal.focusPrevious",
         "when": "terminalFocus"
     },
     {
-        "key": "cmd+left",
+        "key": "ctrl+j h",
         "command": "workbench.action.terminal.focusPreviousPane",
         "when": "terminalFocus"
     },
     {
-        "key": "cmd+right",
-        "command": "workbench.action.terminal.focusPreviousPane",
+        "key": "ctrl+j l",
+        "command": "workbench.action.terminal.focusNextPane",
+        "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+j x",
+        "command": "workbench.action.terminal.kill",
         "when": "terminalFocus"
     }
 ]
