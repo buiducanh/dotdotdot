@@ -40,5 +40,9 @@
         "key": "ctrl+j x",
         "command": "workbench.action.terminal.kill",
         "when": "terminalFocus"
+    },
+    {
+        "key": "ctrl+j f",
+        "command": "workbench.action.terminal.runSelectedText",
     }
 ]
